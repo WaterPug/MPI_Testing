@@ -182,7 +182,7 @@ namespace MPI
             }
          }
 
-         // Local solve
+         // 1.4 Local solve
          auto neighbourAliveCellsCount = [&](int column, int row)->int
          {
             return isAlive((*dataArrayOld)[column + 1][row]) +
