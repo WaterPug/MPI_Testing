@@ -17,7 +17,7 @@ add_executable(Example1 ${_source_list})
 target_link_libraries(
 	Example1 
 	PRIVATE  
-	MPI_C
+	${MPI_msmpi_LIBRARY}
 )
 
 foreach(_source IN ITEMS ${_source_list})

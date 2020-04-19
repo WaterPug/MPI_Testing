@@ -15,9 +15,9 @@ file(
 add_executable(GameOfLife ${_source_list})
 
 target_link_libraries(
-	Example1 
+	GameOfLife 
 	PRIVATE  
-	MPI_C
+	${MPI_msmpi_LIBRARY}
 )
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)
