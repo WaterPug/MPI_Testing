@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "Constants.h"
+#include "Utilities.h"
 
 namespace Exercice2
 {
