@@ -1,5 +1,5 @@
-#ifndef GAME_OF_LIFE_EXO_4
-#define GAME_OF_LIFE_EXO_4
+#ifndef GAME_OF_LIFE_EXO_5
+#define GAME_OF_LIFE_EXO_5
 
 #include "mpi.h"
 #include "Constants.h"
@@ -13,9 +13,10 @@
 #include <random>
 #include <memory>
 
-namespace Exercice4
+namespace Exercice5
 {
-	// Exercice 4 : Only with 1/2 workers
+	// Exercice 5 : Custom data types -- 1/2 proc only
+	// Simply make MPI_Datatype
 	std::string solve(int argc, char* argv[])
 	{
 		MPI_Status status;
@@ -75,6 +76,10 @@ namespace Exercice4
 			}
 		}
 
+		MPI_Datatype rowData;
+		MPI_Type_vector(width, 1, 1, MPI_C_BOOL, &rowData);
+		MPI_Type_commit(&rowData);
+
 		for (int loop = 0; loop < numberOfLoops; ++loop)
 		{
 			// 1.1 Local -- Update left and right ghost cells
@@ -113,11 +118,11 @@ namespace Exercice4
 					MPI_Recv(&(*dataArrayOld)[0][width + 1], 1, MPI_C_BOOL, previousProcID, 3, MPI_COMM_WORLD, &status);
 
 					// 1.3
-					MPI_Send(&((*dataArrayOld)[1][1]), width, MPI_C_BOOL, previousProcID, 4, MPI_COMM_WORLD);
-					MPI_Send(&((*dataArrayOld)[endHeight][1]), width, MPI_C_BOOL, previousProcID, 5, MPI_COMM_WORLD);
+					MPI_Send(&((*dataArrayOld)[1][1]), 1, rowData, previousProcID, 4, MPI_COMM_WORLD);
+					MPI_Send(&((*dataArrayOld)[endHeight][1]), 1, rowData, previousProcID, 5, MPI_COMM_WORLD);
 
-					MPI_Recv(&((*dataArrayOld)[0][1]), width, MPI_C_BOOL, previousProcID, 6, MPI_COMM_WORLD, &status);
-					MPI_Recv(&((*dataArrayOld)[endHeight + 1][1]), width, MPI_C_BOOL, previousProcID, 7, MPI_COMM_WORLD, &status);
+					MPI_Recv(&((*dataArrayOld)[0][1]), 1, rowData, previousProcID, 6, MPI_COMM_WORLD, &status);
+					MPI_Recv(&((*dataArrayOld)[endHeight + 1][1]), 1, rowData, previousProcID, 7, MPI_COMM_WORLD, &status);
 				}
 				else if (procID == (nproc - 1))
 				{
@@ -129,11 +134,11 @@ namespace Exercice4
 					MPI_Send(&(*dataArrayOld)[height][1], 1, MPI_C_BOOL, nextProcID, 3, MPI_COMM_WORLD);
 
 					// 1.3
-					MPI_Recv(&(*dataArrayOld)[startHeight][1], width, MPI_C_BOOL, previousProcID, 4, MPI_COMM_WORLD, &status);
-					MPI_Recv(&(*dataArrayOld)[endHeight][1], width, MPI_C_BOOL, previousProcID, 5, MPI_COMM_WORLD, &status);
+					MPI_Recv(&(*dataArrayOld)[startHeight][1], 1, rowData, previousProcID, 4, MPI_COMM_WORLD, &status);
+					MPI_Recv(&(*dataArrayOld)[endHeight][1], 1, rowData, previousProcID, 5, MPI_COMM_WORLD, &status);
 
-					MPI_Send(&(*dataArrayOld)[startHeight - 1][1], width, MPI_C_BOOL, previousProcID, 6, MPI_COMM_WORLD);
-					MPI_Send(&(*dataArrayOld)[endHeight + 1][1], width, MPI_C_BOOL, previousProcID, 7, MPI_COMM_WORLD);
+					MPI_Send(&(*dataArrayOld)[startHeight - 1][1], 1, rowData, previousProcID, 6, MPI_COMM_WORLD);
+					MPI_Send(&(*dataArrayOld)[endHeight + 1][1], 1, rowData, previousProcID, 7, MPI_COMM_WORLD);
 				}
 			}
 
